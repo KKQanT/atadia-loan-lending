@@ -19,6 +19,15 @@ export default function Index(props: Props) {
         <title>Atadian Loan Lending</title>
         <meta name="description" content="Atadian Loan Lending"/>
       </Head>
+      <h1>
+        hey, {user.username}#{user.discriminator}
+        <h2>
+          email: {user.email}
+          <h3>
+            guildsName: {user.guildsName}
+          </h3>
+        </h2>
+      </h1>
       <FormView user={user}/>
     </div>
   );
