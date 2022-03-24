@@ -3,6 +3,9 @@ export interface DiscordUser {
   username: string;
   avatar: string;
   discriminator: string;
+  email: string;
+  guildsName: string;
+  guildsId: string;
   public_flags: number;
   flags: number;
   locale: string;
