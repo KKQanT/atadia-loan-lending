@@ -10,20 +10,20 @@ export const SubmitFormTest: FC<Props> = (props) => {
   
   const {publicKey} = useWallet();
   const { user } = props
+  user.id
 
   const handleSubmit = async (event:any) => {
     event.preventDefault()
 
     const data = {
-      first: event.target.first.value,
-      last: event.target.last.value,
-      //walletAddress: publicKey!.toBase58()
-      walletAddress:user.username
+      //first: event.target.first.value,
+      discorduser : user.username,
+      walletAddress: publicKey!.toBase58()
     };
 
     const JSONdata = JSON.stringify(data);
 
-    const endpoint = 'api/FormTest';
+    const endpoint = 'api/FormTest2';
 
     const options = {
       method : 'POST',

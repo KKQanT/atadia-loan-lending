@@ -14,7 +14,6 @@ const Form: NextPage = (props) => {
           content="Loan Lending"
         />
       </Head>
-      <FormView/>
     </div>
   );
 };

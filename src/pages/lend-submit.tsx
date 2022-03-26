@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { VerifyWalletView } from "views";
+import { SubmitLendView } from "views";
 import { DiscordUser } from "../utils/types";
 import { useRouter } from 'next/router'
 import { GetServerSideProps } from "next";
@@ -7,20 +7,21 @@ import { parseUser } from "../utils/parse-user";
 
 interface Props {
   user: DiscordUser;
+  availablePackages: any;
 }
 
-export default function Index(props: Props) {
+export default function LendSubmit(props:Props) {
   const router = useRouter()
-  const { user } = props
+  const { user, availablePackages } = props
   return (
     <div>
       <Head>
         <title>Atadian Loan Lending</title>
         <meta name="description" content="Atadian Loan Lending"/>
       </Head>
-      <VerifyWalletView user={user}/>
+      <SubmitLendView user={user} availablePackages={availablePackages}/>
     </div>
-  );
+  )
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async function (ctx) {
@@ -35,6 +36,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async function (ctx
     };
   }
 
-  return { props: { user } };
-};
+  const responsePackages = await fetch(
+    `https://atadia-pfpscore-api.herokuapp.com/api?discordId=${user.id}`
+    );
 
+  const availablePackages = await responsePackages.json();
+
+  return { props: { user, availablePackages } };
+};

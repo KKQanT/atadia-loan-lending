@@ -18,3 +18,39 @@ model FormTest {
   last String
   walletAddress String
 }
+
+model FormTest2 {
+  id    Int   @default(autoincrement())  @id
+  discorduser String @db.VarChar(50)
+  walletAddress String
+}
+
+model VerifyWalletV1 {
+  id    Int   @default(autoincrement())   @id
+  createdAt DateTime @default(now())
+  discordId String
+  walletAddress String
+  discordUsername String
+  discordDiscriminator String
+  discordEmail String?
+  discordLocale String?
+  discordPremiumType Int?
+  discordFlag Int?
+  discordPublicFlag Int?
+  discortMfaEnable Boolean?
+  joinedServerId String? @db.VarChar(1900)
+  joinedServerName String? @db.VarChar(10100)
+}
+
+model lendSubmitV1 {
+  id    Int   @default(autoincrement())   @id
+  createdAt DateTime @default(now())
+  discordId String
+  walletAddress String
+  pfpTokenAddress String
+  twitterHandle String?
+  loanPackage Int
+  userTimeZoneLong String
+  userTimeZoneShort String
+  pohsRecipant Boolean?
+}

@@ -3,12 +3,12 @@ export interface DiscordUser {
   username: string;
   avatar: string;
   discriminator: string;
-  email: string;
+  public_flags: number | null;
+  flags: number | null;
+  locale: string | null;
+  mfa_enabled: boolean | null;
+  premium_type: number | null;
+  email: string | null;
   guildsName: string;
-  guildsId: string;
-  public_flags: number;
-  flags: number;
-  locale: string;
-  mfa_enabled: boolean;
-  premium_type: number;
+  guildsId:string
 }
