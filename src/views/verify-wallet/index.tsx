@@ -9,7 +9,7 @@ interface Props {
 export const VerifyWalletView: FC<Props> = (props:Props) => {
   const { user } = props;
   return (
-    <div>
+    <div className='m-auto'>
       <VerifyWallet user={user} />
     </div>
   )

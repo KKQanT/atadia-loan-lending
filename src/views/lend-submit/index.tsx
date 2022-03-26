@@ -10,7 +10,7 @@ interface Props {
 export const SubmitLendView: FC<Props> = (props:Props) => {
   const { user, availablePackages } = props;
   return (
-    <div>
+    <div className="w-full">
       <SubmitLend user={user} availablePackages={availablePackages}/>
     </div>
   )

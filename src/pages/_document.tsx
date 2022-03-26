@@ -11,7 +11,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-        <link rel="shortcut icon" href="/favicon.ico"/>
+        <link rel="shortcut icon" href="/pineapple_fruit_food_icon_218309.ico"/>
         </Head>
         <body>
           <Main />

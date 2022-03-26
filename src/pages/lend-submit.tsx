@@ -14,7 +14,7 @@ export default function LendSubmit(props:Props) {
   const router = useRouter()
   const { user, availablePackages } = props
   return (
-    <div>
+    <div className="w-full">
       <Head>
         <title>Atadian Loan Lending</title>
         <meta name="description" content="Atadian Loan Lending"/>
