@@ -10,6 +10,7 @@ interface Props {
 export const SubmitLend: FC<Props> = (props) => {
   const {publicKey} = useWallet();
   const {user, availablePackages} = props;
+  const [ isLoading, setIsLoading ] = useState(null)
   console.log(availablePackages)
 
   const handleSubmit = async (event:any) => {
@@ -39,7 +40,9 @@ export const SubmitLend: FC<Props> = (props) => {
     }
 
     try {
+      setIsLoading(true);
       const response = await fetch(endpoint, options);
+      setIsLoading(false);
 
       if (response.status === 200) {
         notify({type:'success', message:'submit successfully, ser!'});
@@ -133,7 +136,11 @@ export const SubmitLend: FC<Props> = (props) => {
             from-purple-600 to-teal-400 hover:bg-gradient-to-bl 
             focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 
             font-medium rounded-lg text-sm px-8 py-2.5 text-center mr-2 mb-2"
-            >Submit</button>
+            >
+              {isLoading
+                ?<span> Submitting... </span> 
+                :<span> Submit </span>}
+            </button>
           </div>
         </div>
       </form>
