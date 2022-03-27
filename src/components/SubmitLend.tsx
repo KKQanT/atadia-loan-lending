@@ -109,16 +109,16 @@ export const SubmitLend: FC<Props> = (props) => {
             rounded leading-tight focus:outline-none focus:bg-white 
             focus:border-gray-500">
               <option value="2" disabled={!availablePackages["2"]}>
-                Lend : 1◎   Duration : 1 week   Repay: 1.05◎
+                Loan amount: 1 SOL (you repay 1.05 SOL in 1 week)
               </option>
               <option value="3" disabled={!availablePackages["3"]}>
-                Lend : 2◎   Duration : 1 week   Repay: 2.1◎
+                Loan amount: 2 SOL (you repay 2.1 SOL in 1 week)
               </option>
               <option value="4" disabled={!availablePackages["4"]}>
-                Lend : 3◎   Duration : 1 week   Repay: 3.15◎
+                Loan amount: 3 SOL (you repay 3.15 SOL in 1 week)
               </option>
               <option value="5" disabled={!availablePackages["5"]}>
-                Lend : 4◎   Duration : 1 week   Repay: 2.2◎
+                Loan amount: 4 SOL (you repay 4.2 SOL in 1 week)
               </option>
               <option value="1" disabled={!availablePackages["1"]}>
                 Don’t want a loan
@@ -127,7 +127,10 @@ export const SubmitLend: FC<Props> = (props) => {
           </label>
         </div>
         <div className="mt-5">
-          Note: Some package might not be available for you based on judgment
+          Note: Some packages may not be available to you. 
+          Only hit submit if you want the loan and are willing to pay the fee. 
+          Once you clicked submit, a transfer will be scheduled and cannot be undone.”
+
         </div>
         <div className="md:flex md:items-center mt-10">
           <div className="m-auto">

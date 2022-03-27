@@ -25,14 +25,14 @@ export default function Index(props: Props) {
           Please follow the following  step before jumping into lending submit process<br />
           <br />
           ◎   Connect your wallet
-          <br /><br />
-          ◎   Click add wallet
-          <br /><br />
+          <br />
+          ◎   Click ***Submit Wallet Address***
+          <br />
           ◎   Disconnect your wallet. After that, change your wallet in your browser extention then connect wallet again.
-          <br /><br />
-          ◎   Again, click add wallet
-          <br /><br />
-          ◎   If you have already add (at least 1) wallet(s), click to submit lending in menu bar.
+          <br />
+          ◎   Again, click ***Submit Wallet Address***
+          <br />
+          ◎   If you have already add (at least 1) wallet(s), click submit lending in menu bar.
           <br /><br />
           **Note: You have to submit at least 1 wallet that have been created for a while in order to submit for loan lending.**
         </p>
