@@ -59,15 +59,21 @@ export const VerifyWallet: FC<Props> = (props) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <button className="text-white bg-gradient-to-br 
+      {!publicKey
+      ?<button className="text-white bg-gray-400  
+      font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+      type="submit" disabled={!publicKey}>
+        <span> Submit Wallet Address </span>
+      </button>
+      :<button className="text-white bg-gradient-to-br 
       from-purple-600 to-teal-400 hover:bg-gradient-to-bl 
       focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 
       font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
       type="submit" disabled={!publicKey}>
         {isLoading
         ?<span> Submitting... </span> 
-        :<span> Add Wallet </span>}
-      </button>
+        :<span> Submit Wallet Address </span>}
+      </button>}
     </form>
   )
 }
