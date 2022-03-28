@@ -18,12 +18,12 @@ export const ContentContainer: FC = props => {
           </li>
           <li>
             <Link href="/">
-              <a>Home</a>
+              <a>Submit Wallet Address</a>
             </Link>
           </li>
           <li>
             <Link href='/lend-submit'>
-              <a>Submit lending</a>
+              <a>Submit Loan Application</a>
             </Link>
           </li>
         </ul>

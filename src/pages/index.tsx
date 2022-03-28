@@ -18,23 +18,63 @@ export default function Index(props: Props) {
         <title>Atadian Loan Lending</title>
         <meta name="description" content="Atadian Loan Lending"/>
       </Head>
-      <div className="max-w-xl rounded-lg overflow-hidden bg-zinc-800 p-10">
-        <div className="font-bold text-2xl mb-5">◎ Make us trust you</div>
+      <div className="max-w-3xl rounded-lg overflow-hidden bg-zinc-800 p-10">
+        <div className="font-bold text-2xl mb-5">Welcome to “The Atadia Lending Lab”</div>
+        <br />
+
+        <b>
+            Baseline info on our loan terms
+        </b>
+        <br />
         <p>
-          In order to get higher tier loan packages, you need to tell us how many wallets you own. 
-          Please follow the following  step before jumping into lending submit process<br />
+          <b>◎ Duration:</b> 1 week (e.g. If you received our loan on Monday 11am your time, pay back to us by your 11am next Monday)
           <br />
-          ◎   Connect your wallet
+          <b>◎ Convenience fee:</b> 5% over the loan duration
           <br />
-          ◎   Click ***Submit Wallet Address***
-          <br />
-          ◎   Disconnect your wallet. After that, change your wallet in your browser extention then connect wallet again.
-          <br />
-          ◎   Again, click ***Submit Wallet Address***
-          <br />
-          ◎   If you have already add (at least 1) wallet(s), click submit lending in menu bar.
-          <br /><br />
-          **Note: You have to submit at least 1 wallet that have been created for a while in order to submit for loan lending.**
+          <b>◎ Loan amounts</b> vary depending on your data (your MNPL track records, the number of wallets you provide, the age of the wallets, etc.)
+        </p>
+
+        <br /><br />
+        <b>
+          If you’re interested in getting a loan, please follow these key steps:
+        </b>
+        <br />
+        <p>
+          ◎ Connect wallets on this page <br />
+          ◎ Submit loan application 
+        </p>
+        <br /><br />
+
+        <b>
+          Conditions:
+        </b>
+        <br />
+        <p>
+          <b>◎ Connecting multiple wallets </b> 
+          will increase the amount of your loan offer, but this will be considered 
+          in conjunction with the rest of your data. You can connect as many wallets 
+          as you like and help us trust you :)
+        </p>
+        <p>
+          <b>Sign into the wallet of your choice on your browser extension.
+ New wallets don’t count!</b> By new we mean less 7 days old!! <br />
+          - If you provide only 1 wallet and it is new, you will not be offered a loan <br />
+          - If you connect multiple wallets, new wallets will not contribute to your application.
+        </p>
+        <br />
+
+        <b>
+          How to connect wallets?
+        </b>
+        <p>
+          ◎ Sign into the wallet of your choice on your browser extension. <br />
+          ◎ Hit “SELECT WALLET” on the top right corner and connect the wallet. <br />
+          ◎ Hit “Submit Wallet Address” - this means we’ll consider this wallet in your loan application! <br />
+          ◎ To connect another wallet, disconnect the current wallet by clicking on your current wallet and then “Disconnect” <br />
+          ◎ Switch to the next wallet on your browser extension. <br />
+          ◎ Connect again and hit  “Submit Wallet Address” <br />
+          ◎ Every wallet successfully submitted will contribute to your loan application except those younger than 7-day-old! <br />
+
         </p>
       </div>
       <div className="flex v-screen pt-6">

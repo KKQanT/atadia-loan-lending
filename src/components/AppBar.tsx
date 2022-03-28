@@ -27,10 +27,10 @@ export const AppBar: FC = props => {
         <div className="navbar-center lg:flex">
           <div className="flex items-stretch">
             <Link href="/">
-              <a className="btn btn-ghost btn-sm rounded-btn">Home</a>
+              <a className="btn btn-ghost btn-sm rounded-btn">Submit Wallet Address</a>
             </Link>
             <Link href="lend-submit">
-              <a className="btn btn-ghost btn-sm rounded-btn">Submit lending</a>
+              <a className="btn btn-ghost btn-sm rounded-btn">Submit Loan Application</a>
             </Link>
           </div>
         </div>
