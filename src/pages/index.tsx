@@ -56,8 +56,7 @@ export default function Index(props: Props) {
           as you like and help us trust you :)
         </p>
         <p>
-          <b>Sign into the wallet of your choice on your browser extension.
- New wallets don’t count!</b> By new we mean less 7 days old!! <br />
+          <b>◎ New wallets don’t count!</b> By new we mean less 7 days old!! <br />
           - If you provide only 1 wallet and it is new, you will not be offered a loan <br />
           - If you connect multiple wallets, new wallets will not contribute to your application.
         </p>
