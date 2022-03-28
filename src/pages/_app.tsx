@@ -38,13 +38,7 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
               <Notifications />
               <AppBar/>
               <ContentContainer>
-                { 
-                  pageLoading
-                  ?(<div className='m-auto'>
-                      <LoadingComponent/>
-                    </div>)
-                  :<Component {...pageProps} />
-                }
+                <Component {...pageProps} />
               </ContentContainer>
               <Footer/>
             </div>

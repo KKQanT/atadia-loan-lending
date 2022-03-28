@@ -4,14 +4,13 @@ import { DiscordUser } from "utils/types";
 
 interface Props {
   user: DiscordUser;
-  availablePackages: any;
 }
 
 export const SubmitLendView: FC<Props> = (props:Props) => {
-  const { user, availablePackages } = props;
+  const { user} = props;
   return (
     <div className="w-full">
-      <SubmitLend user={user} availablePackages={availablePackages}/>
+      <SubmitLend user={user}/>
     </div>
   )
 }
