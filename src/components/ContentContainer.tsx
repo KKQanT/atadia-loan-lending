@@ -18,7 +18,7 @@ export const ContentContainer: FC = props => {
           </li>
           <li>
             <Link href="/">
-              <a>Submit Wallet Address</a>
+              <a>Home</a>
             </Link>
           </li>
           <li>
