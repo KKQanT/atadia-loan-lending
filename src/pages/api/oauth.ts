@@ -5,7 +5,7 @@ import { sign } from "jsonwebtoken";
 import { DiscordUser } from "../../utils/types";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const scope = ['identify', 'email'].join(" ");
+const scope = ["identify"].join(" ");
 const REDIRECT_URI = `${config.appUri}/api/oauth`;
 
 const OAUTH_QS = new URLSearchParams({

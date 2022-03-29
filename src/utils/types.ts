@@ -8,5 +8,4 @@ export interface DiscordUser {
   locale: string | null;
   mfa_enabled: boolean | null;
   premium_type: number | null;
-  email: string | null;
 }
