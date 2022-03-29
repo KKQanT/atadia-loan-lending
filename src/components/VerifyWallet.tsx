@@ -26,8 +26,8 @@ export const VerifyWallet: FC<Props> = (props) => {
       discordFlag: user.flags,
       discordPublicFlag: user.public_flags,
       discortMfaEnable: user.mfa_enabled,
-      joinedServerId:user.guildsId,
-      joinedServerName: user.guildsName
+      joinedServerId:null,
+      joinedServerName: null
     };
 
     const JSONdata = JSON.stringify(data);
