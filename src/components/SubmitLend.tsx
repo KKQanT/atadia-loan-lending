@@ -171,7 +171,20 @@ export const SubmitLend: FC<Props> = (props) => {
           Note: Some packages may not be available to you.
           Only hit submit if you want the loan and are willing to pay the fee.
           Once you clicked submit, a transfer will be scheduled and cannot be undone.”
-
+        </div>
+        <div className='mt-5'>
+          There are 3 addresses you can send to (just pick one):<br/>
+          <b>◎ pfpscore.sol </b><br/>
+          <b>◎ atadia.sol </b><br/>
+          <b>◎ Absc4o5YFc3UiTU79JdWgHimGxKLp5EwZiR4sUD8vzQB</b>
+        </div>
+        <div className='mt-5'>
+        IMPORTANT: <b>Transfer back with one of the wallets you have given us</b>, 
+        SO WE KNOW IT'S YOU. If you don't remember, go with the one you received the loan!
+        </div>
+        <div className='mt-5'>
+        NB: You won’t get the money right away as airdrops are done in batches! 
+        Loan status can be checked via our bot in discord!
         </div>
         <div className="md:flex md:items-center mt-10">
           <div className="m-auto">

@@ -69,9 +69,7 @@ export default function Index(props: Props) {
           ◎ Sign into the wallet of your choice on your browser extension. <br />
           ◎ Hit “SELECT WALLET” on the top right corner and connect the wallet. <br />
           ◎ Hit “Submit Wallet Address” - this means we’ll consider this wallet in your loan application! <br />
-          ◎ To connect another wallet, disconnect the current wallet by clicking on your current wallet and then “Disconnect” <br />
-          ◎ Switch to the next wallet on your browser extension. <br />
-          ◎ Connect again and hit  “Submit Wallet Address” <br />
+          ◎ To connect another wallet, disconnect, switch wallets on your browser extension, then connect and submit again. <br/>
           ◎ Every wallet successfully submitted will contribute to your loan application except those younger than 7-day-old! <br />
 
         </p>
