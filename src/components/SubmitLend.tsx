@@ -36,7 +36,7 @@ export const SubmitLend: FC<Props> = (props) => {
       };
 
       const responsePackages = await fetch(
-        `https://atadia-lending-api-4.herokuapp.com/api?walletCode=${listMnplCode}&walletAge=${listAgeCode}`
+        `https://atadia-lending-api-4.herokuapp.com/api?discordId=${user.id}&walletCode=${listMnplCode}&walletAge=${listAgeCode}`
       );
 
       const jsonAvailablePackages = await responsePackages.json();
