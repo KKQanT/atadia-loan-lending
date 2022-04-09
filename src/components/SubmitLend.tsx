@@ -182,7 +182,7 @@ export const SubmitLend: FC<Props> = (props) => {
                 Loan amount: 4 SOL (you repay 4.2 SOL in 1 week)
               </option>
               <option value="1" disabled={!availablePackages["1"]}>
-                Don’t want a loan
+                Don’t want any loan/Cancel the loan
               </option>
             </select>
           </label>
