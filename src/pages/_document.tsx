@@ -11,7 +11,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-        <link rel="shortcut icon" href="/ATADIA_Logo.ico"/>
+        <link rel="shortcut icon" href="/atadia_logo.png"/>
         </Head>
         <body>
           <Main />
