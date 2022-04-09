@@ -11,13 +11,24 @@ export const SubmitLend: FC<Props> = (props) => {
   const { publicKey } = useWallet();
   const { user } = props;
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingCheckNull, setIsLoadingCheckNull] = useState(true)
+  const [isLoadingPackages, setIsLoadingPackages] = useState(true)
   const [availablePackages, setAvailablePackages] = useState(null)
   const [isSubmitting, setisSubmitting] = useState(false)
+  const [isExceed, setIsExceed] = useState(false)
 
   useEffect(() => {
+
+    async function checkNumRegistered() {
+      setIsLoadingCheckNull(true)
+      const responseCheckNum = await fetch('https://check-loan-cap.herokuapp.com/');
+      const jsonCheckNum = await responseCheckNum.json();
+      setIsExceed(jsonCheckNum.isExceed);
+      setIsLoadingCheckNull(false)
+    };
+
     async function fetchAllApi() {
-      setIsLoading(true);
+      setIsLoadingPackages(true);
 
       const responseApi1 = await fetch(`https://atadia-lending-api-1.herokuapp.com/api?discordId=${user.id}`);
       const jsonApi1 = await responseApi1.json();
@@ -42,8 +53,9 @@ export const SubmitLend: FC<Props> = (props) => {
       const jsonAvailablePackages = await responsePackages.json();
 
       setAvailablePackages(jsonAvailablePackages);
-      setIsLoading(false);
+      setIsLoadingPackages(false);
     };
+    checkNumRegistered();
     fetchAllApi();
     console.log(availablePackages)
   }, [])
@@ -89,13 +101,21 @@ export const SubmitLend: FC<Props> = (props) => {
     }
   }
   
-  if (isLoading) return (
+  if (isLoadingCheckNull || isLoadingPackages) {return (
   <div className="flex flex-col h-screen">
     <div className='m-auto'>
       <LoadingComponent/>
     </div>
   </div>
-  )
+  )} else if (isExceed) {
+    return (
+      <div className="flex flex-col h-screen">
+        <div className="m-auto">
+          "Sorry Ser!, We're closed ser"
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
