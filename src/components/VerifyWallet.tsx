@@ -48,7 +48,7 @@ export const VerifyWallet: FC<Props> = (props) => {
       setIsLoading(false);
 
       if (response.status === 200) {
-        notify({type:'success', message:'Wallet successfully submitted, ser!. Disconnect and connect to a new wallet to submit another one!'});
+        notify({type:'success', message:'Wallet successfully submitted, ser! Disconnect and connect to a new wallet to submit another one!'});
       } else {
         notify({type:'error', message: `response status code : ${response.status}`});
       }
