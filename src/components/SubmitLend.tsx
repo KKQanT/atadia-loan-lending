@@ -111,7 +111,7 @@ export const SubmitLend: FC<Props> = (props) => {
     return (
       <div className="flex flex-col h-screen">
         <div className="m-auto">
-          "Sorry Ser!, We're closed ser"
+          "Oops, we've reached the capped amount."
         </div>
       </div>
     )
