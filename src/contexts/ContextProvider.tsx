@@ -14,6 +14,7 @@ import { clusterApiUrl } from '@solana/web3.js';
 import { FC, ReactNode, useCallback, useMemo } from 'react';
 import { AutoConnectProvider, useAutoConnect } from './AutoConnectProvider';
 import { notify } from "../utils/notifications";
+import { env } from 'process';
 
 const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const { autoConnect } = useAutoConnect();
@@ -21,8 +22,14 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     // TODO: WALLET ADAPTER IN GENERAL NEEDS WORK, CONNECTING DIFFERENT WALLETS, NETWORK, REFRESH, EVENTS
 
     {/* TODO: UPDATE CLUSTER PER NETWORK SETTINGS, ADD LOCALHOST + CUSTOMNET | ADAPTER REWORK */ }
-    const network = WalletAdapterNetwork.Devnet;
-    const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+    
+    //const network = WalletAdapterNetwork.Devnet;
+    //const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+    const network = WalletAdapterNetwork.Mainnet;
+    const rpcUri = process.env.MAINNET_RPC ?? clusterApiUrl(network)
+    const endpoint = useMemo(() => rpcUri, [network])
+
 
     const wallets = useMemo(
         () => [

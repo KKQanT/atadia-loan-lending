@@ -1,7 +1,9 @@
 import { FC, useState } from "react";
 import { SubmitLend } from "components/SubmitLend";
 import { DiscordUser } from "utils/types";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { NFT } from "../../utils/types"
+import { getNFTsByOwner } from "../../utils/nft"
 
 interface Props {
   user: DiscordUser;
@@ -32,12 +34,17 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+
     const selectedDao = event.target.selectedDao.value;
+    const {connection} = useConnection()
+    const [walletNFTs, setWalletNFTs] = useState<Array<NFT>>([])
 
     if (selectedDao === "Other") {
-      setaskedHolder(true)
+      setaskedHolder(true);
     } else {
-      setaskedHolder(false)
+      setaskedHolder(false);
+      setbuttonName("verifying...");
+      const NFTs = await getNFTsByOwner(publicKey, connection)
     }
 
   }
