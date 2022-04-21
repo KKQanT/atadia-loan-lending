@@ -15,7 +15,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   const [isContinue, setContinue] = useState(true);
   const [buttonName, setbuttonName] = useState("continue");
 
-  const setButtonName = (event:any) => {
+  const changeButtonName = (event:any) => {
     event.preventDefault();
 
     const selectedDao = event.target.value; 
@@ -30,10 +30,22 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
 
   }
 
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+    const selectedDao = event.target.selectedDao.value;
+
+    if (selectedDao === "Other") {
+      setaskedHolder(true)
+    } else {
+      setaskedHolder(false)
+    }
+
+  }
+
   if (!askedHolder) {
     return (
       <div className="flex v-screen">
-        <form className="m-auto">
+        <form className="m-auto" onSubmit={handleSubmit}>
           <div className="mb-4 w-full">
             <label htmlFor="selectedDao" className="block text-white-700 text-lg mb-2">
               Holder of collab DAO :
@@ -41,7 +53,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
               className="block appearance-none w-full bg-gray-200 
               border border-gray-200 text-zinc-900 py-3 px-4 pr-8 
               rounded leading-tight focus:outline-none focus:bg-white 
-              focus:border-gray-500" onChange={setButtonName}> 
+              focus:border-gray-500" onChange={changeButtonName}> 
                 <option value="Other">
                   None
                 </option>
