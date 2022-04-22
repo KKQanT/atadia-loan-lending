@@ -3,7 +3,7 @@ import { SubmitLend } from "components/SubmitLend";
 import { DiscordUser } from "utils/types";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { NFT } from "../../utils/types"
-import { getNFTsByOwner } from "../../utils/nft"
+import { getNFTsMintAddress } from "../../utils/nft"
 
 interface Props {
   user: DiscordUser;
@@ -16,6 +16,10 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   const [verifiedHolder, setverifiedsHolder] = useState(false);
   const [isContinue, setContinue] = useState(true);
   const [buttonName, setbuttonName] = useState("continue");
+  const {connection} = useConnection();
+  const [walletNFTs, setWalletNFTs] = useState<Array<NFT>>([]);
+
+  const [dummy, setDummy] = useState(null)
 
   const changeButtonName = (event:any) => {
     event.preventDefault();
@@ -36,15 +40,15 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
     event.preventDefault();
 
     const selectedDao = event.target.selectedDao.value;
-    const {connection} = useConnection()
-    const [walletNFTs, setWalletNFTs] = useState<Array<NFT>>([])
 
     if (selectedDao === "Other") {
       setaskedHolder(true);
     } else {
-      setaskedHolder(false);
-      setbuttonName("verifying...");
-      const NFTs = await getNFTsByOwner(publicKey, connection)
+      setaskedHolder(false)
+      setbuttonName("verifying...")
+      const NFTs = await getNFTsMintAddress(publicKey, connection)
+      setWalletNFTs(NFTs)
+      setbuttonName("continue")
     }
 
   }
@@ -86,6 +90,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
                 ><span> {buttonName} </span>
                 </button>
             }
+            {walletNFTs.map(walletNFT => <div>{walletNFT.mint}</div>)}
             </div>
           </div>
         </form>

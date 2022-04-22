@@ -66,3 +66,26 @@ export async function getNFTsByOwner(
 
   return await getNFTMetadataForMany(tokens, conn)
 }
+
+export async function getNFTsMintAddress(
+  owner: PublicKey,
+  conn: Connection
+): Promise<any[]> {
+  const tokenAccounts = await conn.getParsedTokenAccountsByOwner(owner, {
+    programId: TOKEN_PROGRAM_ID,
+  })
+
+  const tokensMintAddress = tokenAccounts.value
+    .filter((tokenAccount) => {
+      const amount = tokenAccount.account.data.parsed.info.tokenAmount
+
+      return amount.decimals === 0 && amount.uiAmount === 1
+    })
+    .map((tokenAccount) => {
+      return {
+        mint: tokenAccount.account.data.parsed.info.mint,
+      }
+    })
+  
+  return tokensMintAddress
+}
