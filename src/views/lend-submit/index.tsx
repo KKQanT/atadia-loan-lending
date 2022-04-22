@@ -41,17 +41,45 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
 
     const selectedDao = event.target.selectedDao.value;
 
-    if (selectedDao === "Other") {
+    if ((selectedDao === "Other" ) || (verifiedHolder)) {
       setaskedHolder(true);
     } else {
-      setaskedHolder(false)
-      setbuttonName("verifying...")
-      const NFTs = await getNFTsMintAddress(publicKey, connection)
-      setWalletNFTs(NFTs)
-      setbuttonName("continue")
+      setaskedHolder(false);
+      setbuttonName("verifying...");
+      const holderNFTsMintAddress = await getNFTsMintAddress(publicKey, connection);
+      setWalletNFTs(holderNFTsMintAddress);
+      checkHolder(holderNFTsMintAddress, selectedDao);
     }
 
   }
+
+  const checkHolder = async (
+    holderNFTsMintAddress: any[], 
+    selectedDao: String) => {
+      if (holderNFTsMintAddress.length !== 0) {
+        const parsedHolderNFtsMintAddress = holderNFTsMintAddress.map(
+          function(e) {
+          e.mint = String(e.mint);
+          return e.mint;
+        });
+        const daoNFTsMintAddress = [
+          "49TBquCC1o8kwNAU9wamP2q9jTYwuysVmRJr3f18i2V3",
+          "FVgFhaRrd1ufCqRVKkMnaMXLscdvppxSsrGxgBKNmhz7"
+        ];
+        const intersectMintAddress = parsedHolderNFtsMintAddress.filter(x => daoNFTsMintAddress.includes(x));
+        if (intersectMintAddress.length > 0) {
+          setverifiedsHolder(true);
+          setbuttonName("Continue");
+        } else {
+          setverifiedsHolder(false);
+          setbuttonName("Verify Holder");
+        }
+      } else {
+        setverifiedsHolder(false);
+        setbuttonName("Verify Holder");
+    }
+  }
+  
 
   if (!askedHolder) {
     return (
@@ -90,6 +118,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
                 ><span> {buttonName} </span>
                 </button>
             }
+            {String(verifiedHolder)}
             {walletNFTs.map(walletNFT => <div>{walletNFT.mint}</div>)}
             </div>
           </div>
