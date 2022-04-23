@@ -2,8 +2,10 @@ import { FC, useState } from "react";
 import { SubmitLend } from "components/SubmitLend";
 import { DiscordUser } from "utils/types";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { NFT } from "../../utils/types"
-import { getNFTsMintAddress } from "../../utils/nft"
+import { getNFTsMintAddress } from "utils/nft"
+import { notify } from 'utils/notifications'
+import { type } from "os";
+
 
 interface Props {
   user: DiscordUser;
@@ -14,17 +16,15 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   const { publicKey } = useWallet();
   const [askedHolder, setaskedHolder] = useState(false);
   const [verifiedHolder, setverifiedsHolder] = useState(false);
-  const [isContinue, setContinue] = useState(true);
   const [buttonName, setbuttonName] = useState("continue");
   const {connection} = useConnection();
-  const [walletNFTs, setWalletNFTs] = useState<Array<NFT>>([]);
   const [stakeProg, setStakeProg] = useState<Array<String>>([]);
   const [sigNer, setSigNer] = useState<Array<String>>([]);
   const [isStaking, setIsStakin] = useState(false)
 
   const [dummy, setDummy] = useState(null)
 
-  const handleStakingCheckBox = (ev) => { 
+  const handleStakingCheckBox = (e: any) => { 
     setIsStakin(!isStaking); 
   }
 
@@ -34,10 +34,8 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
     const selectedDao = event.target.value; 
 
     if (selectedDao === "Other") {
-      setContinue(true);
       setbuttonName("Continue");
     } else {
-      setContinue(false);
       setbuttonName("Verify Holder");
     }
 
@@ -58,7 +56,6 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
         setaskedHolder(false);
         setbuttonName("verifying...");
         const holderNFTsMintAddress = await getNFTsMintAddress(publicKey, connection);
-        setWalletNFTs(holderNFTsMintAddress);
         checkHolder(holderNFTsMintAddress, selectedDao);
       }
     }
@@ -73,21 +70,22 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
           e.mint = String(e.mint);
           return e.mint;
         });
-        const daoNFTsMintAddress = [
-          "49TBquCC1o8kwNAU9wamP2q9jTYwuysVmRJr3f18i2V3",
-          "FVgFhaRrd1ufCqRVKkMnaMXLscdvppxSsrGxgBKNmhz7"
-        ];
+        const respDaoNFTsMintAddress = await fetch(`https://atadia-lending-lab-backend.herokuapp.com/get-hashlist/${selectedDao}`)
+        const daoNFTsMintAddress = await respDaoNFTsMintAddress.json()
         const intersectMintAddress = parsedHolderNFtsMintAddress.filter(x => daoNFTsMintAddress.includes(x));
         if (intersectMintAddress.length > 0) {
           setverifiedsHolder(true);
           setbuttonName("Continue");
+          notify({type:"success", message:"We have verify your token, ser. You are good to go"})
         } else {
           setverifiedsHolder(false);
           setbuttonName("Verify Holder");
+          notify({type:"fail", message:"We can't find any associated token, try again"})
         }
       } else {
         setverifiedsHolder(false);
         setbuttonName("Verify Holder");
+        notify({type:"fail", message:"You don't have any NFTs in your wallets"})
     }
   }
 
@@ -164,7 +162,6 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
                 </button>
             }
             {String(verifiedHolder)}
-            {walletNFTs.map(walletNFT => <div>{walletNFT.mint}</div>)}
             {stakeProg.map(e => <div>{e}</div>)}
             {sigNer.map(e => <div>{e}</div>)}
             {String(isStaking)}
