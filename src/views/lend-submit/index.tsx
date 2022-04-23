@@ -47,8 +47,14 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
     const selectedDao = event.target.selectedDao.value;
 
     if (isStaking) {
-      const inputMintAddress = event.target.inputMintAddress.value;
-      checkHoneyStake(inputMintAddress)
+      if (verifiedHolder) {
+        setaskedHolder(true);
+      } else {
+        const inputMintAddress = event.target.inputMintAddress.value;
+        setaskedHolder(false);
+        setbuttonName("verifying...");
+        checkHoneyStake(inputMintAddress);
+      }
     } else if (!isStaking) {
       if ((selectedDao === "Other" ) || (verifiedHolder)) {
         setaskedHolder(true);
@@ -64,7 +70,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   const checkHolder = async (
     holderNFTsMintAddress: any[], 
     selectedDao: String) => {
-      if (holderNFTsMintAddress.length !== 0) {
+      if (holderNFTsMintAddress.length > 0) {
         const parsedHolderNFtsMintAddress = holderNFTsMintAddress.map(
           function(e) {
           e.mint = String(e.mint);
@@ -92,19 +98,53 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   const checkHoneyStake = async (
     inputMintAddress : string
   ) => {
+    
+    const userPublickey = String(publicKey)
+    const stakingProgramIdArr = [
+      "bankHHdqMuaaST4qQk6mkzxGeKPHWmqdgor6Gs8r88m",
+      "farmL4xeBFVXJqtfxCzU9b28QACM7E2W2ctT6epAjvE"
+    ];
+
     const respTokenTransactions = await fetch(`https://api.solscan.io/account/transaction?address=${inputMintAddress}`);
     const respTokenTransactionsJson = await respTokenTransactions.json();
     const dataArr = respTokenTransactionsJson.data;
     const firstData = dataArr[0];
-    const signerArr = firstData.signer
+    const signerArr = firstData.signer;
     const programIdArr = firstData.parsedInstruction.map(
       function(e) {
         return e.programId
       } 
     );
-    setStakeProg(programIdArr);
-    setSigNer(signerArr);
     
+    const checkedSigner = signerArr.includes(userPublickey);
+    const intersectProgramId = stakingProgramIdArr.filter(x => programIdArr.includes(x));
+    if (intersectProgramId.length > 0) {
+      if (checkedSigner) {
+        setverifiedsHolder(true);
+        setbuttonName("Continue");
+        notify({type:"success", message:"We have verify your token, ser. You are good to go"})
+      } else if (!checkedSigner) {
+        setverifiedsHolder(false);
+        setbuttonName("Verify Holder");
+        notify({type:"fail", message:"wallet not matched"})
+      } else {
+        setverifiedsHolder(false);
+        setbuttonName("Verify Holder");
+        notify({type:"fail", message:"Try again"})
+      }
+    } else if (intersectProgramId.length === 0) {
+      setverifiedsHolder(false);
+      setbuttonName("Verify Holder");
+      notify({type:"fail", message:"program id not matched"})
+    } else {
+      setverifiedsHolder(false);
+      setbuttonName("Verify Holder");
+      notify({type:"fail", message:"Unknow error"})
+    }
+
+    //setStakeProg(programIdArr);
+    //setSigNer(signerArr);
+
   }
 
 
