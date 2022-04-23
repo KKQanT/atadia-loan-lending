@@ -18,8 +18,15 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   const [buttonName, setbuttonName] = useState("continue");
   const {connection} = useConnection();
   const [walletNFTs, setWalletNFTs] = useState<Array<NFT>>([]);
+  const [stakeProg, setStakeProg] = useState<Array<String>>([]);
+  const [sigNer, setSigNer] = useState<Array<String>>([]);
+  const [isStaking, setIsStakin] = useState(false)
 
   const [dummy, setDummy] = useState(null)
+
+  const handleStakingCheckBox = (ev) => { 
+    setIsStakin(!isStaking); 
+  }
 
   const changeButtonName = (event:any) => {
     event.preventDefault();
@@ -41,16 +48,20 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
 
     const selectedDao = event.target.selectedDao.value;
 
-    if ((selectedDao === "Other" ) || (verifiedHolder)) {
-      setaskedHolder(true);
-    } else {
-      setaskedHolder(false);
-      setbuttonName("verifying...");
-      const holderNFTsMintAddress = await getNFTsMintAddress(publicKey, connection);
-      setWalletNFTs(holderNFTsMintAddress);
-      checkHolder(holderNFTsMintAddress, selectedDao);
+    if (isStaking) {
+      const inputMintAddress = event.target.inputMintAddress.value;
+      checkHoneyStake(inputMintAddress)
+    } else if (!isStaking) {
+      if ((selectedDao === "Other" ) || (verifiedHolder)) {
+        setaskedHolder(true);
+      } else {
+        setaskedHolder(false);
+        setbuttonName("verifying...");
+        const holderNFTsMintAddress = await getNFTsMintAddress(publicKey, connection);
+        setWalletNFTs(holderNFTsMintAddress);
+        checkHolder(holderNFTsMintAddress, selectedDao);
+      }
     }
-
   }
 
   const checkHolder = async (
@@ -79,7 +90,25 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
         setbuttonName("Verify Holder");
     }
   }
-  
+
+  const checkHoneyStake = async (
+    inputMintAddress : string
+  ) => {
+    const respTokenTransactions = await fetch(`https://api.solscan.io/account/transaction?address=${inputMintAddress}`);
+    const respTokenTransactionsJson = await respTokenTransactions.json();
+    const dataArr = respTokenTransactionsJson.data;
+    const firstData = dataArr[0];
+    const signerArr = firstData.signer
+    const programIdArr = firstData.parsedInstruction.map(
+      function(e) {
+        return e.programId
+      } 
+    );
+    setStakeProg(programIdArr);
+    setSigNer(signerArr);
+    
+  }
+
 
   if (!askedHolder) {
     return (
@@ -102,6 +131,22 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
               </select>
             </label>
           </div>
+          {isStaking
+          ?<div className="mb-4 w-full">
+            <label htmlFor="inputMintAddress"
+              className="block text-white-700 text-lg mb-2">
+              mintAddress:
+            </label>
+            <input type="text" id="inputMintAddress" name="inputMintAddress"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-zinc-900 
+            leading-tight focus:outline-none focus:shadow-outline"
+              required />
+          </div>
+          :<div className="mb-4 w-full"></div>}
+          <div className="mb-4 w-full">
+          <input type="checkbox" checked={isStaking} onChange={handleStakingCheckBox} />
+            <label> My token is staking rn </label>
+          </div>
           <div className="md:flex md:items-center mt-10">
             <div className="m-auto">
             {!publicKey
@@ -120,6 +165,9 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
             }
             {String(verifiedHolder)}
             {walletNFTs.map(walletNFT => <div>{walletNFT.mint}</div>)}
+            {stakeProg.map(e => <div>{e}</div>)}
+            {sigNer.map(e => <div>{e}</div>)}
+            {String(isStaking)}
             </div>
           </div>
         </form>
