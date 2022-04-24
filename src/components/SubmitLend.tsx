@@ -6,10 +6,11 @@ import { LoadingComponent } from 'components/LoadingComponent'
 
 interface Props {
   user: DiscordUser;
+  verifiedHolder:boolean
 }
 export const SubmitLend: FC<Props> = (props) => {
   const { publicKey } = useWallet();
-  const { user } = props;
+  const { user, verifiedHolder } = props;
 
   const [isLoadingCheckNull, setIsLoadingCheckNull] = useState(true)
   const [isLoadingPackages, setIsLoadingPackages] = useState(true)
@@ -162,31 +163,57 @@ export const SubmitLend: FC<Props> = (props) => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="loanPackage"
+          {!verifiedHolder 
+            ?<label htmlFor="loanPackage"
+              className="block text-white-700 text-lg mb-2">
+              Loan package:
+              <select name="loanPackage" id="loanPackage"
+                className="block appearance-none w-full bg-gray-200 
+              border border-gray-200 text-zinc-900 py-3 px-4 pr-8 
+              rounded leading-tight focus:outline-none focus:bg-white 
+              focus:border-gray-500">
+                <option value="2" disabled={!availablePackages["2"]}>
+                  Loan amount: 1 SOL (you repay 1.05 SOL in 1 week)
+                </option>
+                <option value="3" disabled={!availablePackages["3"]}>
+                  Loan amount: 2 SOL (you repay 2.1 SOL in 1 week)
+                </option>
+                <option value="4" disabled={!availablePackages["4"]}>
+                  Loan amount: 3 SOL (you repay 3.15 SOL in 1 week)
+                </option>
+                <option value="5" disabled={!availablePackages["5"]}>
+                  Loan amount: 4 SOL (you repay 4.2 SOL in 1 week)
+                </option>
+                <option value="1" disabled={!availablePackages["1"]}>
+                  Don’t want any loan/Cancel the loan
+                </option>
+              </select>
+            </label>
+            :<label htmlFor="loanPackage"
             className="block text-white-700 text-lg mb-2">
-            Loan package:
+            Discount Loan package:
             <select name="loanPackage" id="loanPackage"
               className="block appearance-none w-full bg-gray-200 
             border border-gray-200 text-zinc-900 py-3 px-4 pr-8 
             rounded leading-tight focus:outline-none focus:bg-white 
             focus:border-gray-500">
-              <option value="2" disabled={!availablePackages["2"]}>
-                Loan amount: 1 SOL (you repay 1.05 SOL in 1 week)
+              <option value="6" disabled={!availablePackages["2"]}>
+                Loan amount: 1 SOL (you repay 1 SOL in 1 week)
               </option>
-              <option value="3" disabled={!availablePackages["3"]}>
-                Loan amount: 2 SOL (you repay 2.1 SOL in 1 week)
+              <option value="7" disabled={!availablePackages["3"]}>
+                Loan amount: 2 SOL (you repay 2 SOL in 1 week)
               </option>
-              <option value="4" disabled={!availablePackages["4"]}>
-                Loan amount: 3 SOL (you repay 3.15 SOL in 1 week)
+              <option value="8" disabled={!availablePackages["4"]}>
+                Loan amount: 3 SOL (you repay 3 SOL in 1 week)
               </option>
-              <option value="5" disabled={!availablePackages["5"]}>
-                Loan amount: 4 SOL (you repay 4.2 SOL in 1 week)
+              <option value="9" disabled={!availablePackages["5"]}>
+                Loan amount: 4 SOL (you repay 4 SOL in 1 week)
               </option>
               <option value="1" disabled={!availablePackages["1"]}>
                 Don’t want any loan/Cancel the loan
               </option>
             </select>
-          </label>
+          </label>}
         </div>
         <div className="mt-5">
         Note: Some packages may not be available to you. Only hit submit if you want 

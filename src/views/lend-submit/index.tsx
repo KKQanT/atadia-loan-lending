@@ -4,7 +4,6 @@ import { DiscordUser } from "utils/types";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { getNFTsMintAddress } from "utils/nft"
 import { notify } from 'utils/notifications'
-import { type } from "os";
 
 
 interface Props {
@@ -18,11 +17,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   const [verifiedHolder, setverifiedsHolder] = useState(false);
   const [buttonName, setbuttonName] = useState("continue");
   const {connection} = useConnection();
-  const [stakeProg, setStakeProg] = useState<Array<String>>([]);
-  const [sigNer, setSigNer] = useState<Array<String>>([]);
   const [isStaking, setIsStakin] = useState(false)
-
-  const [dummy, setDummy] = useState(null)
 
   const handleStakingCheckBox = (e: any) => { 
     setIsStakin(!isStaking); 
@@ -201,10 +196,6 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
                 ><span> {buttonName} </span>
                 </button>
             }
-            {String(verifiedHolder)}
-            {stakeProg.map(e => <div>{e}</div>)}
-            {sigNer.map(e => <div>{e}</div>)}
-            {String(isStaking)}
             </div>
           </div>
         </form>
@@ -214,7 +205,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   
   return (
     <div className="w-full">
-      <SubmitLend user={user}/>
+      <SubmitLend user={user} verifiedHolder={verifiedHolder}/>
     </div>
   )
 }
