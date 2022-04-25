@@ -48,7 +48,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
         const inputMintAddress = event.target.inputMintAddress.value;
         setaskedHolder(false);
         setbuttonName("verifying...");
-        checkHoneyStake(inputMintAddress);
+        checkHoneyStake(inputMintAddress, selectedDao);
       }
     } else if (!isStaking) {
       if ((selectedDao === "Other" ) || (verifiedHolder)) {
@@ -71,8 +71,8 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
           e.mint = String(e.mint);
           return e.mint;
         });
-        const respDaoNFTsMintAddress = await fetch(`https://atadia-lending-lab-backend.herokuapp.com/get-hashlist/${selectedDao}`)
-        const daoNFTsMintAddress = await respDaoNFTsMintAddress.json()
+        const respDaoNFTsMintAddress = await fetch(`https://atadia-lending-lab-backend.herokuapp.com/get-hashlist/${selectedDao}`);
+        const daoNFTsMintAddress = await respDaoNFTsMintAddress.json();
         const intersectMintAddress = parsedHolderNFtsMintAddress.filter(x => daoNFTsMintAddress.includes(x));
         if (intersectMintAddress.length > 0) {
           setverifiedsHolder(true);
@@ -91,7 +91,8 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   }
 
   const checkHoneyStake = async (
-    inputMintAddress : string
+    inputMintAddress : string,
+    selectedDao: string
   ) => {
     
     const userPublickey = String(publicKey)
@@ -99,7 +100,8 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
       "bankHHdqMuaaST4qQk6mkzxGeKPHWmqdgor6Gs8r88m",
       "farmL4xeBFVXJqtfxCzU9b28QACM7E2W2ctT6epAjvE"
     ];
-
+    const respDaoNFTsMintAddress = await fetch(`https://atadia-lending-lab-backend.herokuapp.com/get-hashlist/${selectedDao}`);
+    const daoNFTsMintAddress = await respDaoNFTsMintAddress.json();
     const respTokenTransactions = await fetch(`https://api.solscan.io/account/transaction?address=${inputMintAddress}`);
     const respTokenTransactionsJson = await respTokenTransactions.json();
     const dataArr = respTokenTransactionsJson.data;
@@ -111,30 +113,38 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
       } 
     );
     
-    const checkedSigner = signerArr.includes(userPublickey);
+    const checkedInputMintAddress = daoNFTsMintAddress.includes(inputMintAddress);
     const intersectProgramId = stakingProgramIdArr.filter(x => programIdArr.includes(x));
-    if (intersectProgramId.length > 0) {
-      if (checkedSigner) {
-        setverifiedsHolder(true);
-        setbuttonName("Continue");
-        notify({type:"success", message:"We have verify your token, ser. You are good to go"})
-      } else if (!checkedSigner) {
+    const checkedSigner = signerArr.includes(userPublickey);
+
+    if (checkedInputMintAddress) {
+      if (intersectProgramId.length > 0) {
+        if (checkedSigner) {
+          setverifiedsHolder(true);
+          setbuttonName("Continue");
+          notify({type:"success", message:"We have verify your token, ser. You are good to go"})
+        } else if (!checkedSigner) {
+          setverifiedsHolder(false);
+          setbuttonName("Verify Holder");
+          notify({type:"fail", message:"wallet not matched"})
+        } else {
+          setverifiedsHolder(false);
+          setbuttonName("Verify Holder");
+          notify({type:"fail", message:"Try again"})
+        }
+      } else if (intersectProgramId.length === 0) {
         setverifiedsHolder(false);
         setbuttonName("Verify Holder");
-        notify({type:"fail", message:"wallet not matched"})
+        notify({type:"fail", message:"program id not matched"})
       } else {
         setverifiedsHolder(false);
         setbuttonName("Verify Holder");
-        notify({type:"fail", message:"Try again"})
+        notify({type:"fail", message:"Unknow error"})
       }
-    } else if (intersectProgramId.length === 0) {
+    } else if (!checkedInputMintAddress) {
       setverifiedsHolder(false);
       setbuttonName("Verify Holder");
-      notify({type:"fail", message:"program id not matched"})
-    } else {
-      setverifiedsHolder(false);
-      setbuttonName("Verify Holder");
-      notify({type:"fail", message:"Unknow error"})
+      notify({type:"fail", message:`Not ${selectedDao} token, sir`})
     }
 
     //setStakeProg(programIdArr);
