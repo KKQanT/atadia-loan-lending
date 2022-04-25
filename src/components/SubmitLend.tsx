@@ -3,6 +3,8 @@ import { FC, useState, useEffect } from 'react'
 import { DiscordUser } from "utils/types";
 import { notify } from 'utils/notifications'
 import { LoadingComponent } from 'components/LoadingComponent'
+import { signIn, signOut, useSession} from 'next-auth/react';
+import {getToken} from 'next-auth/jwt';
 
 interface Props {
   user: DiscordUser;
@@ -11,6 +13,7 @@ interface Props {
 export const SubmitLend: FC<Props> = (props) => {
   const { publicKey } = useWallet();
   const { user, verifiedHolder } = props;
+  const { data: session } = useSession()
 
   const [isLoadingCheckNull, setIsLoadingCheckNull] = useState(true)
   const [isLoadingPackages, setIsLoadingPackages] = useState(true)
@@ -64,7 +67,7 @@ export const SubmitLend: FC<Props> = (props) => {
   const handleSubmit = async (event: any) => {
     event.preventDefault()
 
-    const data = {
+    const submitData = {
       discordId: user.id,
       walletAddress: publicKey!.toBase58(),
       pfpTokenAddress: event.target.pfpTokenAddress.value,
@@ -75,7 +78,7 @@ export const SubmitLend: FC<Props> = (props) => {
       pohsRecipant: false
     };
 
-    const JSONdata = JSON.stringify(data);
+    const JSONdata = JSON.stringify(submitData);
 
     const endpoint = 'api/LendSubmit';
 
@@ -237,13 +240,13 @@ export const SubmitLend: FC<Props> = (props) => {
         </div>
         <div className="md:flex md:items-center mt-10">
           <div className="m-auto">
-            {!publicKey
+            {((!publicKey) || (!session))
             ?<button className="text-white bg-gray-400  
             font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-            type="submit" disabled={!publicKey}>
+            type="submit" disabled={((!publicKey) || (!session))}>
               <span> Submit </span>
             </button>
-            :<button type="submit" disabled={!publicKey}
+            :<button type="submit" disabled={((!publicKey) || (!session))}
               className="text-white bg-gradient-to-br 
             from-purple-600 to-teal-400 hover:bg-gradient-to-bl 
             focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 

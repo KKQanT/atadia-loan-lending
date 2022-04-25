@@ -3,9 +3,12 @@ import Link from "next/link";
 
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useAutoConnect } from '../contexts/AutoConnectProvider';
+import { useSession, signIn, signOut } from "next-auth/react"
+
 
 export const AppBar: FC = props => {
   const { autoConnect, setAutoConnect } = useAutoConnect();
+  const { data: session } = useSession();
 
   return (
     <div className="flex-none p-2">
@@ -37,7 +40,13 @@ export const AppBar: FC = props => {
 
         {/* Wallet & Settings */}
         <div className="navbar-end bordered">
-          <WalletMultiButton className="btn btn-ghost mr-2" />
+          {!session
+          ?<button onClick={() => signIn("twitter")}>Sign in</button>
+          :<button onClick={() => signOut()}>Sign out</button>}
+          {session
+          ?<div>{session.twitterHandle}</div>
+          :<div></div>}
+          <WalletMultiButton className="btn btn-ghost mr" />
         </div>
       </div>
       {props.children}

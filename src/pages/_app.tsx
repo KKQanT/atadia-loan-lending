@@ -7,12 +7,14 @@ import { ContentContainer } from '../components/ContentContainer';
 import { Footer } from '../components/Footer';
 import Notifications from '../components/Notification'
 import { useRouter } from 'next/router';
-import { LoadingComponent } from "../components/LoadingComponent"
+import { LoadingComponent } from "../components/LoadingComponent";
+import {SessionProvider} from "next-auth/react";
+
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 require('../styles/globals.css');
 
-const App: FC<AppProps> = ({ Component, pageProps }) => {
+const App: FC<AppProps> = ({ Component, pageProps: {session, ...pageProps} }) => {
 
     const router = useRouter();
     const [pageLoading, setPageLoading] = useState(false);
@@ -34,14 +36,16 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
           </Head>
 
           <ContextProvider>
-            <div className="flex flex-col h-screen">
-              <Notifications />
-              <AppBar/>
-              <ContentContainer>
-                <Component {...pageProps} />
-              </ContentContainer>
-              <Footer/>
-            </div>
+            <SessionProvider session={session} refetchInterval={5 * 60}>
+              <div className="flex flex-col h-screen">
+                <Notifications />
+                <AppBar/>
+                <ContentContainer>
+                    <Component {...pageProps} />
+                </ContentContainer>
+                <Footer/>
+              </div>
+            </SessionProvider>
           </ContextProvider>
         </>
     );

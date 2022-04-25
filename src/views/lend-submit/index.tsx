@@ -19,7 +19,8 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   const {connection} = useConnection();
   const [isStaking, setIsStakin] = useState(false)
 
-  const handleStakingCheckBox = (e: any) => { 
+  const handleStakingCheckBox = (event: any) => {
+    event.preventDefault();
     setIsStakin(!isStaking); 
   }
 
@@ -122,29 +123,29 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
         if (checkedSigner) {
           setverifiedsHolder(true);
           setbuttonName("Continue");
-          notify({type:"success", message:"We have verify your token, ser. You are good to go"})
+          notify({type:"success", message:"We have verify your token, ser. You are good to go"});
         } else if (!checkedSigner) {
           setverifiedsHolder(false);
           setbuttonName("Verify Holder");
-          notify({type:"fail", message:"wallet not matched"})
+          notify({type:"fail", message:"wallet not matched"});
         } else {
           setverifiedsHolder(false);
           setbuttonName("Verify Holder");
-          notify({type:"fail", message:"Try again"})
+          notify({type:"fail", message:"Try again"});
         }
       } else if (intersectProgramId.length === 0) {
         setverifiedsHolder(false);
         setbuttonName("Verify Holder");
-        notify({type:"fail", message:"program id not matched"})
+        notify({type:"fail", message:"program id not matched"});
       } else {
         setverifiedsHolder(false);
         setbuttonName("Verify Holder");
-        notify({type:"fail", message:"Unknow error"})
+        notify({type:"fail", message:"Unknow error"});
       }
     } else if (!checkedInputMintAddress) {
       setverifiedsHolder(false);
       setbuttonName("Verify Holder");
-      notify({type:"fail", message:`Not ${selectedDao} token, sir`})
+      notify({type:"fail", message:`Not ${selectedDao} token, sir`});
     }
 
     //setStakeProg(programIdArr);
@@ -174,6 +175,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
               </select>
             </label>
           </div>
+
           {isStaking
           ?<div className="mb-4 w-full">
             <label htmlFor="inputMintAddress"
@@ -186,12 +188,14 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
               required />
           </div>
           :<div className="mb-4 w-full"></div>}
+
           <div className="mb-4 w-full">
           <input type="checkbox" checked={isStaking} onChange={handleStakingCheckBox} />
             <label> My token is staking rn </label>
           </div>
           <div className="md:flex md:items-center mt-10">
             <div className="m-auto">
+
             {!publicKey
               ?<button className="text-white bg-gray-400  
               font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
@@ -206,6 +210,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
                 ><span> {buttonName} </span>
                 </button>
             }
+            
             </div>
           </div>
         </form>
