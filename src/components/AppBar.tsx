@@ -41,11 +41,13 @@ export const AppBar: FC = props => {
         {/* Wallet & Settings */}
         <div className="navbar-end bordered">
           {!session
-          ?<button onClick={() => signIn("twitter")}>Sign in</button>
-          :<button onClick={() => signOut()}>Sign out</button>}
-          {session
+          ?<button className="btn btn-ghost mr"
+          onClick={() => signIn("twitter")}>Connect Twitter</button>
+          :<button className="btn btn-ghost mr" 
+          onClick={() => signOut()}>Sign out</button>}
+          {/* session
           ?<div>{session.twitterHandle}</div>
-          :<div></div>}
+          :<div></div> */}
           <WalletMultiButton className="btn btn-ghost mr" />
         </div>
       </div>

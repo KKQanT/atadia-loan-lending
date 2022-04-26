@@ -27,7 +27,7 @@ export const SubmitLend: FC<Props> = (props) => {
       setIsLoadingCheckNull(true)
       const responseCheckNum = await fetch('https://atadia-lending-lab-backend.herokuapp.com/');
       const jsonCheckNum = await responseCheckNum.json();
-      setIsExceed(jsonCheckNum.isExceed);
+      //setIsExceed(jsonCheckNum.isExceed); //////////////////////
       setIsLoadingCheckNull(false)
     };
 
@@ -61,47 +61,73 @@ export const SubmitLend: FC<Props> = (props) => {
     };
     checkNumRegistered();
     fetchAllApi();
-    console.log(availablePackages)
   }, [])
+
+  const verifyLoanPackage = (loanPackage:string) => {
+    const parsedLoanPackage = parseInt(loanPackage);
+    if (parsedLoanPackage < 5) {
+      const allowedLoanPackage = availablePackages[loanPackage];
+      return allowedLoanPackage
+    } else if (parsedLoanPackage >= 6) {
+      if (!verifiedHolder) {
+        notify({ type: 'fail', message: "Bruh! You're not a holder" })
+        return false
+      } else if (verifiedHolder) {
+        const parsedOriginalLoanPackage = parsedLoanPackage - 4;
+        const originalLoanPackage = String(parsedOriginalLoanPackage);
+        const allowedLoanPackage = availablePackages[originalLoanPackage];
+        return allowedLoanPackage
+      }  
+    }
+  }
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
 
-    const submitData = {
-      discordId: user.id,
-      walletAddress: publicKey!.toBase58(),
-      pfpTokenAddress: event.target.pfpTokenAddress.value,
-      twitterHandle: event.target.twitterHandle.value,
-      loanPackage: parseInt(event.target.loanPackage.value),
-      userTimeZoneLong: event.target.userTimeZoneLong.value,
-      userTimeZoneShort: 'Blank',
-      pohsRecipant: false
-    };
+    const loanPackage = event.target.loanPackage.value
 
-    const JSONdata = JSON.stringify(submitData);
+    const allowedLoanPackage = verifyLoanPackage(loanPackage)
 
-    const endpoint = 'api/LendSubmit';
+    if (allowedLoanPackage) {
+      
+      const submitData = {
+        discordId: user.id,
+        walletAddress: publicKey!.toBase58(),
+        pfpTokenAddress: event.target.pfpTokenAddress.value,
+        twitterHandle: event.target.twitterHandle.value,
+        loanPackage: parseInt(event.target.loanPackage.value),
+        userTimeZoneLong: event.target.userTimeZoneLong.value,
+        userTimeZoneShort: 'Blank',
+        pohsRecipant: false
+      };
 
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSONdata
-    }
+      const JSONdata = JSON.stringify(submitData);
 
-    try {
-      setisSubmitting(true);
-      const response = await fetch(endpoint, options);
-      setisSubmitting(false);
+      const endpoint = 'api/LendSubmit';
 
-      if (response.status === 200) {
-        notify({ type: 'success', message: 'submit successfully, ser!' });
-      } else {
-        notify({ type: 'error', message: `response status code : ${response.status}` });
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSONdata
       }
-    } catch (error) {
-      notify({ type: 'error', message: `error : ${error}` });
+
+      try {
+        setisSubmitting(true);
+        const response = await fetch(endpoint, options);
+        setisSubmitting(false);
+
+        if (response.status === 200) {
+          notify({ type: 'success', message: 'submit successfully, ser!' });
+        } else {
+          notify({ type: 'error', message: `response status code : ${response.status}` });
+        }
+      } catch (error) {
+        notify({ type: 'error', message: `error : ${error}` });
+      }
+    } else if (!allowedLoanPackage) {
+      notify({ type: 'fail', message: "Bruh! your requested loan package did not match your minimum eligibility." });
     }
   }
   
@@ -175,18 +201,26 @@ export const SubmitLend: FC<Props> = (props) => {
               border border-gray-200 text-zinc-900 py-3 px-4 pr-8 
               rounded leading-tight focus:outline-none focus:bg-white 
               focus:border-gray-500">
-                <option value="2" disabled={!availablePackages["2"]}>
+                {availablePackages["2"]
+                ?<option value="2" disabled={!availablePackages["2"]}>
                   Loan amount: 1 SOL (you repay 1.05 SOL in 1 week)
                 </option>
-                <option value="3" disabled={!availablePackages["3"]}>
+                :<div></div>}
+                {availablePackages["3"]
+                ?<option value="3" disabled={!availablePackages["3"]}>
                   Loan amount: 2 SOL (you repay 2.1 SOL in 1 week)
                 </option>
-                <option value="4" disabled={!availablePackages["4"]}>
+                :<div></div>}
+                {availablePackages["4"]
+                ?<option value="4" disabled={!availablePackages["4"]}>
                   Loan amount: 3 SOL (you repay 3.15 SOL in 1 week)
                 </option>
-                <option value="5" disabled={!availablePackages["5"]}>
+                :<div></div>}
+                {availablePackages["5"]
+                ?<option value="5" disabled={!availablePackages["5"]}>
                   Loan amount: 4 SOL (you repay 4.2 SOL in 1 week)
                 </option>
+                :<div></div>}
                 <option value="1" disabled={!availablePackages["1"]}>
                   Don’t want any loan/Cancel the loan
                 </option>
@@ -200,18 +234,26 @@ export const SubmitLend: FC<Props> = (props) => {
             border border-gray-200 text-zinc-900 py-3 px-4 pr-8 
             rounded leading-tight focus:outline-none focus:bg-white 
             focus:border-gray-500">
-              <option value="6" disabled={!availablePackages["2"]}>
+              {availablePackages["2"]
+              ?<option value="6" disabled={!availablePackages["2"]}>
                 Loan amount: 1 SOL (you repay 1 SOL in 1 week)
               </option>
-              <option value="7" disabled={!availablePackages["3"]}>
+              :<div></div>}
+              {availablePackages["3"]
+              ?<option value="7" disabled={!availablePackages["3"]}>
                 Loan amount: 2 SOL (you repay 2 SOL in 1 week)
               </option>
-              <option value="8" disabled={!availablePackages["4"]}>
+              :<div></div>}
+              {availablePackages["4"]
+              ?<option value="8" disabled={!availablePackages["4"]}>
                 Loan amount: 3 SOL (you repay 3 SOL in 1 week)
               </option>
-              <option value="9" disabled={!availablePackages["5"]}>
+              :<div></div>}
+              {availablePackages["5"]
+              ?<option value="9" disabled={!availablePackages["5"]}>
                 Loan amount: 4 SOL (you repay 4 SOL in 1 week)
               </option>
+              :<div></div>}
               <option value="1" disabled={!availablePackages["1"]}>
                 Don’t want any loan/Cancel the loan
               </option>

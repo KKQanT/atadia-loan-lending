@@ -12,10 +12,10 @@ export default NextAuth({
   ],
   callbacks: {
     async jwt({token, user, account, profile, isNewUser}) {
-      console.log("token")
-      console.log(token)
-      console.log("profile")
-      console.log(profile)
+      //console.log("token")
+      //console.log(token)
+      //console.log("profile")
+      //console.log(profile)
       if (profile) {
         token['twitterHandle'] = profile.data.username;
       }
