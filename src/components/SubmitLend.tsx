@@ -3,8 +3,7 @@ import { FC, useState, useEffect } from 'react'
 import { DiscordUser } from "utils/types";
 import { notify } from 'utils/notifications'
 import { LoadingComponent } from 'components/LoadingComponent'
-import { signIn, signOut, useSession} from 'next-auth/react';
-import {getToken} from 'next-auth/jwt';
+import { useSession} from 'next-auth/react';
 
 interface Props {
   user: DiscordUser;
@@ -14,12 +13,20 @@ export const SubmitLend: FC<Props> = (props) => {
   const { publicKey } = useWallet();
   const { user, verifiedHolder } = props;
   const { data: session } = useSession()
+  const [twitterHandle, setTwitterHandle] = useState<string>("")
 
-  const [isLoadingCheckNull, setIsLoadingCheckNull] = useState(true)
-  const [isLoadingPackages, setIsLoadingPackages] = useState(true)
-  const [availablePackages, setAvailablePackages] = useState(null)
-  const [isSubmitting, setisSubmitting] = useState(false)
-  const [isExceed, setIsExceed] = useState(false)
+  const [isLoadingCheckNull, setIsLoadingCheckNull] = useState(true);
+  const [isLoadingPackages, setIsLoadingPackages] = useState(true);
+  const [availablePackages, setAvailablePackages] = useState(null);
+  const [isSubmitting, setisSubmitting] = useState(false);
+  const [isExceed, setIsExceed] = useState(false);
+
+  useEffect(() => {
+    if (session?.twitter) {
+      const twitterData = session.twitter as any;
+      setTwitterHandle(twitterData.username);
+    }
+  }, [session]);
 
   useEffect(() => {
 
@@ -59,13 +66,17 @@ export const SubmitLend: FC<Props> = (props) => {
       setAvailablePackages(jsonAvailablePackages);
       setIsLoadingPackages(false);
     };
-    checkNumRegistered();
-    fetchAllApi();
+    try {
+      checkNumRegistered();
+      fetchAllApi();
+    } catch (err) {
+      notify({type:"fail", message:`Sry, seem like there is an error : ${err} on our end. Don't open the ticket yet just refresh bro`})
+    }
   }, [])
 
   const verifyLoanPackage = (loanPackage:string) => {
     const parsedLoanPackage = parseInt(loanPackage);
-    if (parsedLoanPackage < 5) {
+    if (parsedLoanPackage < 6) {
       const allowedLoanPackage = availablePackages[loanPackage];
       return allowedLoanPackage
     } else if (parsedLoanPackage >= 6) {
@@ -88,13 +99,13 @@ export const SubmitLend: FC<Props> = (props) => {
 
     const allowedLoanPackage = verifyLoanPackage(loanPackage)
 
-    if (allowedLoanPackage) {
+    if ((allowedLoanPackage) && (twitterHandle !== "") && (publicKey) && (user)) {
       
       const submitData = {
         discordId: user.id,
         walletAddress: publicKey!.toBase58(),
         pfpTokenAddress: event.target.pfpTokenAddress.value,
-        twitterHandle: event.target.twitterHandle.value,
+        twitterHandle: `@${twitterHandle}`,
         loanPackage: parseInt(event.target.loanPackage.value),
         userTimeZoneLong: event.target.userTimeZoneLong.value,
         userTimeZoneShort: 'Blank',
@@ -128,6 +139,12 @@ export const SubmitLend: FC<Props> = (props) => {
       }
     } else if (!allowedLoanPackage) {
       notify({ type: 'fail', message: "Bruh! your requested loan package did not match your minimum eligibility." });
+    } else if (twitterHandle === "") {
+      notify({ type: 'fail', message: "Bruh! log in your twitter pls" });
+    } else if (!publicKey) {
+      notify({ type: 'fail', message: "Bruh! connect wallet pls" });
+    } else if (!user) {
+      notify({ type: 'fail', message: "Bruh! connect discord pls" });
     }
   }
   
@@ -158,17 +175,6 @@ export const SubmitLend: FC<Props> = (props) => {
             PFP token address:
           </label>
           <input type="text" id="pfpTokenAddress" name="pfpTokenAddress"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-zinc-900 
-          leading-tight focus:outline-none focus:shadow-outline"
-            required />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="twitterHandle"
-            className="block text-white-700 text-lg mb-2">
-            Twitter handle:
-          </label>
-          <input type="text" id="twitterHandle" name="twitterHandle"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-zinc-900 
           leading-tight focus:outline-none focus:shadow-outline"
             required />

@@ -57,8 +57,14 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
       } else {
         setaskedHolder(false);
         setbuttonName("verifying...");
-        const holderNFTsMintAddress = await getNFTsMintAddress(publicKey, connection);
-        checkHolder(holderNFTsMintAddress, selectedDao);
+        try {
+          const holderNFTsMintAddress = await getNFTsMintAddress(publicKey, connection)
+          checkHolder(holderNFTsMintAddress, selectedDao);
+        } catch (err) {
+          setaskedHolder(false);
+          setbuttonName("Verify Holder");
+          notify({type:"fail", message:`cannot get token Adress due to ${err}, relax... please try again bro don't open the ticket yet`})
+        }
       }
     }
   }
@@ -66,28 +72,34 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   const checkHolder = async (
     holderNFTsMintAddress: any[], 
     selectedDao: String) => {
-      if (holderNFTsMintAddress.length > 0) {
-        const parsedHolderNFtsMintAddress = holderNFTsMintAddress.map(
-          function(e) {
-          e.mint = String(e.mint);
-          return e.mint;
-        });
-        const respDaoNFTsMintAddress = await fetch(`https://atadia-lending-lab-backend.herokuapp.com/get-hashlist/${selectedDao}`);
-        const daoNFTsMintAddress = await respDaoNFTsMintAddress.json();
-        const intersectMintAddress = parsedHolderNFtsMintAddress.filter(x => daoNFTsMintAddress.includes(x));
-        if (intersectMintAddress.length > 0) {
-          setverifiedsHolder(true);
-          setbuttonName("Continue");
-          notify({type:"success", message:"We have verify your token, ser. You are good to go"})
+      
+      try {
+        if (holderNFTsMintAddress.length > 0) {
+          const parsedHolderNFtsMintAddress = holderNFTsMintAddress.map(
+            function(e) {
+            e.mint = String(e.mint);
+            return e.mint;
+          });
+          const respDaoNFTsMintAddress = await fetch(`https://atadia-lending-lab-backend.herokuapp.com/get-hashlist/${selectedDao}`);
+          const daoNFTsMintAddress = await respDaoNFTsMintAddress.json();
+          const intersectMintAddress = parsedHolderNFtsMintAddress.filter(x => daoNFTsMintAddress.includes(x));
+          if (intersectMintAddress.length > 0) {
+            setverifiedsHolder(true);
+            setbuttonName("Continue");
+            notify({type:"success", message:"We have verify your token, ser. You are good to go"})
+          } else {
+            setverifiedsHolder(false);
+            setbuttonName("Verify Holder");
+            notify({type:"fail", message:"We can't find any associated token, try again"})
+          }
         } else {
           setverifiedsHolder(false);
           setbuttonName("Verify Holder");
-          notify({type:"fail", message:"We can't find any associated token, try again"})
-        }
-      } else {
-        setverifiedsHolder(false);
-        setbuttonName("Verify Holder");
-        notify({type:"fail", message:"You don't have any NFTs in your wallets"})
+          notify({type:"fail", message:"You don't have any NFTs in your wallets"})
+      }
+    } catch (err) {
+      setbuttonName("Verify Holder");
+      notify({type:"fail", message:`cannot get hashlist of DAOs due to ${err}, relax... please try again bro don't open the ticket yet`})
     }
   }
 
@@ -96,56 +108,61 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
     selectedDao: string
   ) => {
     
-    const userPublickey = String(publicKey)
-    const stakingProgramIdArr = [
-      "bankHHdqMuaaST4qQk6mkzxGeKPHWmqdgor6Gs8r88m",
-      "farmL4xeBFVXJqtfxCzU9b28QACM7E2W2ctT6epAjvE"
-    ];
-    const respDaoNFTsMintAddress = await fetch(`https://atadia-lending-lab-backend.herokuapp.com/get-hashlist/${selectedDao}`);
-    const daoNFTsMintAddress = await respDaoNFTsMintAddress.json();
-    const respTokenTransactions = await fetch(`https://api.solscan.io/account/transaction?address=${inputMintAddress}`);
-    const respTokenTransactionsJson = await respTokenTransactions.json();
-    const dataArr = respTokenTransactionsJson.data;
-    const firstData = dataArr[0];
-    const signerArr = firstData.signer;
-    const programIdArr = firstData.parsedInstruction.map(
-      function(e) {
-        return e.programId
-      } 
-    );
-    
-    const checkedInputMintAddress = daoNFTsMintAddress.includes(inputMintAddress);
-    const intersectProgramId = stakingProgramIdArr.filter(x => programIdArr.includes(x));
-    const checkedSigner = signerArr.includes(userPublickey);
+    try {
+      const userPublickey = String(publicKey)
+      const stakingProgramIdArr = [
+        "bankHHdqMuaaST4qQk6mkzxGeKPHWmqdgor6Gs8r88m",
+        "farmL4xeBFVXJqtfxCzU9b28QACM7E2W2ctT6epAjvE"
+      ];
+      const respDaoNFTsMintAddress = await fetch(`https://atadia-lending-lab-backend.herokuapp.com/get-hashlist/${selectedDao}`);
+      const daoNFTsMintAddress = await respDaoNFTsMintAddress.json();
+      const respTokenTransactions = await fetch(`https://api.solscan.io/account/transaction?address=${inputMintAddress}`);
+      const respTokenTransactionsJson = await respTokenTransactions.json();
+      const dataArr = respTokenTransactionsJson.data;
+      const firstData = dataArr[0];
+      const signerArr = firstData.signer;
+      const programIdArr = firstData.parsedInstruction.map(
+        function(e) {
+          return e.programId
+        } 
+      );
+      
+      const checkedInputMintAddress = daoNFTsMintAddress.includes(inputMintAddress);
+      const intersectProgramId = stakingProgramIdArr.filter(x => programIdArr.includes(x));
+      const checkedSigner = signerArr.includes(userPublickey);
 
-    if (checkedInputMintAddress) {
-      if (intersectProgramId.length > 0) {
-        if (checkedSigner) {
-          setverifiedsHolder(true);
-          setbuttonName("Continue");
-          notify({type:"success", message:"We have verify your token, ser. You are good to go"});
-        } else if (!checkedSigner) {
+      if (checkedInputMintAddress) {
+        if (intersectProgramId.length > 0) {
+          if (checkedSigner) {
+            setverifiedsHolder(true);
+            setbuttonName("Continue");
+            notify({type:"success", message:"We have verify your token, ser. You are good to go"});
+          } else if (!checkedSigner) {
+            setverifiedsHolder(false);
+            setbuttonName("Verify Holder");
+            notify({type:"fail", message:"wallet not matched"});
+          } else {
+            setverifiedsHolder(false);
+            setbuttonName("Verify Holder");
+            notify({type:"fail", message:"Try again"});
+          }
+        } else if (intersectProgramId.length === 0) {
           setverifiedsHolder(false);
           setbuttonName("Verify Holder");
-          notify({type:"fail", message:"wallet not matched"});
+          notify({type:"fail", message:"program id not matched"});
         } else {
           setverifiedsHolder(false);
           setbuttonName("Verify Holder");
-          notify({type:"fail", message:"Try again"});
+          notify({type:"fail", message:"Unknow error"});
         }
-      } else if (intersectProgramId.length === 0) {
+      } else if (!checkedInputMintAddress) {
         setverifiedsHolder(false);
         setbuttonName("Verify Holder");
-        notify({type:"fail", message:"program id not matched"});
-      } else {
-        setverifiedsHolder(false);
-        setbuttonName("Verify Holder");
-        notify({type:"fail", message:"Unknow error"});
+        notify({type:"fail", message:`Not ${selectedDao} token, sir`});
       }
-    } else if (!checkedInputMintAddress) {
-      setverifiedsHolder(false);
+    } catch (err) {
       setbuttonName("Verify Holder");
-      notify({type:"fail", message:`Not ${selectedDao} token, sir`});
+      notify({type:"fail", message:`cannot get check staking due to ${err}, relax... please try again bro don't open the ticket yet`})
     }
 
     //setStakeProg(programIdArr);
