@@ -91,7 +91,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
           if (intersectMintAddress.length > 0) {
             setverifiedsHolder(true);
             setbuttonName("Continue");
-            notify({type:"success", message:"We have verify your token, ser. You are good to go"})
+            notify({type:"success", message:"Your holder status is successfully verified. Please proceed to submit loan application."})
           } else {
             setverifiedsHolder(false);
             setbuttonName("Verify Holder");
@@ -141,7 +141,7 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
           if (checkedSigner) {
             setverifiedsHolder(true);
             setbuttonName("Continue");
-            notify({type:"success", message:"We have verify your token, ser. You are good to go"});
+            notify({type:"success", message:"Your holder status is successfully verified. Please proceed to submit loan application."});
           } else if (!checkedSigner) {
             setverifiedsHolder(false);
             setbuttonName("Verify Holder");
@@ -179,10 +179,10 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   if (!askedHolder) {
     return (
       <div className="flex v-screen">
-        <form className="m-auto" onSubmit={handleSubmit}>
+        <form className="bg-zinc-800 shadow-md rounded w-1/4 p-7 m-auto" onSubmit={handleSubmit}>
           <div className="mb-4 w-full">
             <label htmlFor="selectedDao" className="block text-white-700 text-lg mb-2">
-              Holder of collab DAO :
+                You are a holder of :
               <select name="selectedDao" id="selectedDao" 
               className="block appearance-none w-full bg-gray-200 
               border border-gray-200 text-zinc-900 py-3 px-4 pr-8 
@@ -202,18 +202,23 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
           ?<div className="mb-4 w-full">
             <label htmlFor="inputMintAddress"
               className="block text-white-700 text-lg mb-2">
-              mintAddress:
+              NFT token address
             </label>
             <input type="text" id="inputMintAddress" name="inputMintAddress"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-zinc-900 
             leading-tight focus:outline-none focus:shadow-outline"
               required />
+            <div className="py-5">
+              <a>You’ll first need to get this from solscan in SPL token transfer
+              If you can't find it because of too many transactions, just unstake 
+              it and don't forget to write it down so that it can be used next time</a><br/>
+            </div>
           </div>
           :<div className="mb-4 w-full"></div>}
 
           <div className="mb-4 w-full">
           <input type="checkbox" checked={isStaking} onChange={handleStakingCheckBox} />
-            <label> My token is staking rn </label>
+            <label> My NFT is currently staked. </label>
           </div>
           <div className="md:flex md:items-center mt-10">
             <div className="m-auto">
