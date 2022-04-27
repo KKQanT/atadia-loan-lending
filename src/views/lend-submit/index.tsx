@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { SubmitLend } from "components/SubmitLend";
 import { DiscordUser } from "utils/types";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -18,6 +18,11 @@ export const SubmitLendView: FC<Props> = (props:Props) => {
   const [buttonName, setbuttonName] = useState("continue");
   const {connection} = useConnection();
   const [isStaking, setIsStakin] = useState(false)
+
+  useEffect(() => {
+    setaskedHolder(false);
+    setverifiedsHolder(false);
+  }, [publicKey])
 
   const handleStakingCheckBox = (event: any) => {
     event.preventDefault();
