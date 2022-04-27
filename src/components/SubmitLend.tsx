@@ -34,7 +34,7 @@ export const SubmitLend: FC<Props> = (props) => {
       setIsLoadingCheckNull(true)
       const responseCheckNum = await fetch('https://atadia-lending-lab-backend.herokuapp.com/');
       const jsonCheckNum = await responseCheckNum.json();
-      //setIsExceed(jsonCheckNum.isExceed); //////////////////////
+      setIsExceed(jsonCheckNum.isExceed); //////////////////////
       setIsLoadingCheckNull(false)
     };
 
