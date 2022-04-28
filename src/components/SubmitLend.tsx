@@ -32,9 +32,9 @@ export const SubmitLend: FC<Props> = (props) => {
 
     async function checkNumRegistered() {
       setIsLoadingCheckNull(true)
-      const responseCheckNum = await fetch('https://atadia-lending-lab-backend.herokuapp.com/');
-      const jsonCheckNum = await responseCheckNum.json();
-      setIsExceed(jsonCheckNum.isExceed); //////////////////////
+      const responseCheckCap = await fetch('https://atadia-lending-lab-backend.herokuapp.com/get-sol-cap/');
+      const jsonCheckCap = await responseCheckCap.json();
+      setIsExceed(jsonCheckCap.isExceed); //////////////////////
       setIsLoadingCheckNull(false)
     };
 
@@ -95,56 +95,66 @@ export const SubmitLend: FC<Props> = (props) => {
   const handleSubmit = async (event: any) => {
     event.preventDefault()
 
-    const loanPackage = event.target.loanPackage.value
+    try {
+      const responseCheckCap = await fetch('https://atadia-lending-lab-backend.herokuapp.com/get-sol-cap/');
+      const jsonCheckCap = await responseCheckCap.json();
+      const solExceed = jsonCheckCap.isExceed
 
-    const allowedLoanPackage = verifyLoanPackage(loanPackage)
+      const loanPackage = event.target.loanPackage.value;
 
-    if ((allowedLoanPackage) && (twitterHandle !== "") && (publicKey) && (user)) {
-      
-      const submitData = {
-        discordId: user.id,
-        walletAddress: publicKey!.toBase58(),
-        pfpTokenAddress: event.target.pfpTokenAddress.value,
-        twitterHandle: `@${twitterHandle}`,
-        loanPackage: parseInt(event.target.loanPackage.value),
-        userTimeZoneLong: event.target.userTimeZoneLong.value,
-        userTimeZoneShort: 'Blank',
-        pohsRecipant: false
-      };
+      const allowedLoanPackage = verifyLoanPackage(loanPackage);
 
-      const JSONdata = JSON.stringify(submitData);
+      if ((allowedLoanPackage) && (twitterHandle !== "") && (publicKey) && (user) && (!solExceed)) {
+        
+        const submitData = {
+          discordId: user.id,
+          walletAddress: publicKey!.toBase58(),
+          pfpTokenAddress: event.target.pfpTokenAddress.value,
+          twitterHandle: `@${twitterHandle}`,
+          loanPackage: parseInt(event.target.loanPackage.value),
+          userTimeZoneLong: event.target.userTimeZoneLong.value,
+          userTimeZoneShort: 'Blank',
+          pohsRecipant: false
+        };
 
-      const endpoint = 'api/LendSubmit';
+        const JSONdata = JSON.stringify(submitData);
 
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSONdata
-      }
+        const endpoint = 'api/LendSubmit';
 
-      try {
-        setisSubmitting(true);
-        const response = await fetch(endpoint, options);
-        setisSubmitting(false);
-
-        if (response.status === 200) {
-          notify({ type: 'success', message: 'submit successfully, ser!' });
-        } else {
-          notify({ type: 'error', message: `response status code : ${response.status}` });
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSONdata
         }
-      } catch (error) {
-        notify({ type: 'error', message: `error : ${error}` });
+
+        try {
+          setisSubmitting(true);
+          const response = await fetch(endpoint, options);
+          setisSubmitting(false);
+
+          if (response.status === 200) {
+            notify({ type: 'success', message: 'submit successfully, ser!' });
+          } else {
+            notify({ type: 'error', message: `response status code : ${response.status}` });
+          }
+        } catch (error) {
+          notify({ type: 'error', message: `error : ${error}` });
+        }
+      } else if (!allowedLoanPackage) {
+        notify({ type: 'fail', message: "Bruh! your requested loan package did not match your minimum eligibility." });
+      } else if (twitterHandle === "") {
+        notify({ type: 'fail', message: "Bruh! log in your twitter pls" });
+      } else if (!publicKey) {
+        notify({ type: 'fail', message: "Bruh! connect wallet pls" });
+      } else if (!user) {
+        notify({ type: 'fail', message: "Bruh! connect discord pls" });
+      } else if (solExceed) {
+        notify({ type: 'fail', message: "Err... I'm extremly really truly sorry :( we've just reached our SOL quotas... " });
       }
-    } else if (!allowedLoanPackage) {
-      notify({ type: 'fail', message: "Bruh! your requested loan package did not match your minimum eligibility." });
-    } else if (twitterHandle === "") {
-      notify({ type: 'fail', message: "Bruh! log in your twitter pls" });
-    } else if (!publicKey) {
-      notify({ type: 'fail', message: "Bruh! connect wallet pls" });
-    } else if (!user) {
-      notify({ type: 'fail', message: "Bruh! connect discord pls" });
+    } catch (err) {
+      notify({type:"fail", message:`Sry, seem like there is an error : ${err} on our end. Don't open the ticket yet just refresh bro`});
     }
   }
   
