@@ -42,7 +42,7 @@ export const AppBar: FC = props => {
           ?<button className="btn btn-ghost mr"
           onClick={() => signIn("twitter")}>Connect Twitter</button>
           :<button className="btn btn-ghost mr" 
-          onClick={() => signOut()}>Sign out</button>}
+          onClick={() => signOut()}>Sign out twitter</button>}
           {/*  session
           ?<div>{session.twitter.data.username}</div>
           :<div></div> */}

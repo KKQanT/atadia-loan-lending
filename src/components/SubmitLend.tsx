@@ -267,6 +267,9 @@ export const SubmitLend: FC<Props> = (props) => {
           </label>}
         </div>
         <div className="mt-5">
+        <b>Twitter handle inputbox has been removed, so please login your twitter account instead.</b> 
+        </div>
+        <div className="mt-5">
         Note: Some packages may not be available to you. Only hit submit if you want 
         the loan and are willing to pay the fee. Once you clicked submit, a transfer 
         will be scheduled and cannot be undone! If you submit multiple selections 
